@@ -1,0 +1,152 @@
+### Day 2 요청 모음 — shop-logs
+### .http는 한 번에 하나씩 Kibana Dev Tools Console에 복사해서 실행한다.
+
+### V1-T09-P — 실제 CAT 요청, 생성 후 mapping 확인
+GET /_cat/nodes?v
+
+GET /shop-logs
+### 이미 T12에서 생성 완료. 존재하면 다시 PUT하지 않는다.
+
+### V1-T12-P — 개인 GET 존재 확인 → 없을 때만 PUT + 완전한 body → GET/mapping/shards
+GET /shop-logs
+### 위 응답에 index가 있으면 아래 PUT은 실행하지 않는다. 최초 생성 시에만 실행했다.
+
+PUT /shop-logs
+{
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 1,
+    "analysis": {
+      "analyzer": {
+        "log_message_analyzer": { "type": "standard", "stopwords": "_none_" }
+      }
+    }
+  },
+  "mappings": {
+    "dynamic": "strict",
+    "properties": {
+      "log_id": { "type": "keyword" },
+      "timestamp": { "type": "date" },
+      "service_name": { "type": "keyword" },
+      "log_level": { "type": "keyword" },
+      "logger_name": { "type": "keyword" },
+      "message": { "type": "text", "analyzer": "log_message_analyzer" },
+      "exception_class": { "type": "keyword" },
+      "http_status": { "type": "integer" },
+      "duration_ms": { "type": "integer" },
+      "trace_id": { "type": "keyword" }
+    }
+  }
+}
+
+GET /shop-logs/_mapping
+
+GET /_cat/shards/shop-logs?v
+
+### V1-T13-P — 개인 검색어 3개, standard 직접 지정 + 실제 개인 text field(log_message_analyzer) 지정
+POST /shop-logs/_analyze
+{ "analyzer": "standard", "text": "시간 초과" }
+
+POST /shop-logs/_analyze
+{ "analyzer": "log_message_analyzer", "text": "시간 초과" }
+
+POST /shop-logs/_analyze
+{ "analyzer": "whitespace", "text": "시간 초과" }
+
+POST /shop-logs/_analyze
+{ "analyzer": "standard", "text": "재시도" }
+
+POST /shop-logs/_analyze
+{ "analyzer": "log_message_analyzer", "text": "재시도" }
+
+POST /shop-logs/_analyze
+{ "analyzer": "whitespace", "text": "재시도" }
+
+POST /shop-logs/_analyze
+{ "analyzer": "standard", "text": "정상적으로 완료" }
+
+POST /shop-logs/_analyze
+{ "analyzer": "log_message_analyzer", "text": "정상적으로 완료" }
+
+POST /shop-logs/_analyze
+{ "analyzer": "whitespace", "text": "정상적으로 완료" }
+
+### 실제 message 원문 분석 — "재시도가"가 한 token으로 묶이는지 확인
+POST /shop-logs/_analyze
+{ "analyzer": "log_message_analyzer", "text": "요청 처리 중 재시도가 발생했습니다." }
+
+### V1-T14-P — 미사용 ID 확인 → create → GET → update → GET → DELETE → GET/count
+GET /shop-logs/_doc/LOG-TEST03
+
+PUT /shop-logs/_doc/LOG-TEST03
+{
+  "log_id": "LOG-TEST03",
+  "timestamp": "2026-08-31T12:00:00Z",
+  "service_name": "auth-api",
+  "log_level": "INFO",
+  "logger_name": "com.shop.auth-api.RequestHandler",
+  "message": "V1-T14-P CRUD 검증용 문서입니다.",
+  "http_status": 200,
+  "duration_ms": 210,
+  "trace_id": "TRC-TEST03"
+}
+
+GET /shop-logs/_doc/LOG-TEST03
+
+POST /shop-logs/_update/LOG-TEST03
+{
+  "doc": {
+    "log_level": "ERROR",
+    "http_status": 500,
+    "message": "V1-T14-P CRUD 검증 — 오류로 갱신됨."
+  }
+}
+
+GET /shop-logs/_doc/LOG-TEST03
+
+DELETE /shop-logs/_doc/LOG-TEST03
+
+GET /shop-logs/_doc/LOG-TEST03
+
+GET /shop-logs/_count
+
+### V1-T14-P 선택 — 동일 값 update의 noop, 두 번째 DELETE의 not_found
+PUT /shop-logs/_doc/LOG-TEST04
+{
+  "log_id": "LOG-TEST04",
+  "timestamp": "2026-08-31T12:00:00Z",
+  "service_name": "auth-api",
+  "log_level": "INFO",
+  "logger_name": "com.shop.auth-api.RequestHandler",
+  "message": "noop 및 두 번째 DELETE 테스트용 문서입니다.",
+  "http_status": 200,
+  "duration_ms": 1,
+  "trace_id": "TRC-TEST04"
+}
+
+POST /shop-logs/_update/LOG-TEST04
+{ "doc": { "log_level": "INFO" } }
+
+DELETE /shop-logs/_doc/LOG-TEST04
+
+DELETE /shop-logs/_doc/LOG-TEST04
+
+GET /shop-logs/_count
+
+### V1-T16-P — 개인 count → 분류 terms → 숫자 stats → 날짜 min/max
+GET /shop-logs/_count
+
+POST /shop-logs/_search
+{
+  "size": 0,
+  "aggs": {
+    "log_level_count": { "terms": { "field": "log_level", "size": 20 } },
+    "service_name_count": { "terms": { "field": "service_name", "size": 20 } },
+    "duration_ms_stats": { "stats": { "field": "duration_ms" } },
+    "timestamp_range": { "stats": { "field": "timestamp" } }
+  }
+}
+
+### V1-T16-P 선택 — 개인 pipeline
+### 미구현. docs/pipeline-decision.md에서 미적용으로 판단했다(데이터가 이미 구조화된 JSON이라 파싱 불필요).
+### pipeline 동작 자체는 아래 V1-T16-C 공통 실습(product-cleanup)으로 확인했다.
