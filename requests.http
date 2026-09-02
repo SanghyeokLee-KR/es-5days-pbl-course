@@ -150,3 +150,159 @@ POST /shop-logs/_search
 ### V1-T16-P 선택 — 개인 pipeline
 ### 미구현. docs/pipeline-decision.md에서 미적용으로 판단했다(데이터가 이미 구조화된 JSON이라 파싱 불필요).
 ### pipeline 동작 자체는 아래 V1-T16-C 공통 실습(product-cleanup)으로 확인했다.
+
+### 검색 질문 1 — "시간 초과" 언급 로그 (V1-T18-P-2와 동일 조건)
+GET /shop-logs/_search
+{
+  "query": { "match": { "message": "시간 초과" } }
+}
+
+### 검색 질문 2 — 결제 서비스의 느린 ERROR (V1-T19-P-2와 동일 조건)
+GET /shop-logs/_search
+{
+  "query": {
+    "bool": {
+      "filter": [
+        { "term": { "service_name": "payment-api" } },
+        { "term": { "log_level": "ERROR" } },
+        { "range": { "duration_ms": { "gt": 3000 } } }
+      ]
+    }
+  }
+}
+
+### V1-T17-P — 자기 index 첫 Search API
+GET /shop-logs/_search
+{
+  "size": 5,
+  "_source": ["log_id", "timestamp", "service_name", "log_level", "message"],
+  "query": { "match_all": {} }
+}
+
+### V1-T18-P-1 — 정확 조건 (log_level=ERROR)
+GET /shop-logs/_search
+{
+  "size": 5,
+  "query": { "term": { "log_level": "ERROR" } }
+}
+
+### V1-T18-P-2 — 전문 검색 ("시간 초과" in message)
+GET /shop-logs/_search
+{
+  "size": 5,
+  "query": { "match": { "message": "시간 초과" } }
+}
+
+### V1-T19-P-1 — bool/filter 2개 (service_name + log_level)
+GET /shop-logs/_search
+{
+  "size": 5,
+  "query": {
+    "bool": {
+      "filter": [
+        { "term": { "service_name": "payment-api" } },
+        { "term": { "log_level": "ERROR" } }
+      ]
+    }
+  }
+}
+
+### V1-T19-P-2 — 경계 포함(gte) vs 제외(gt) 비교, duration_ms=3000 경계
+GET /shop-logs/_search
+{
+  "size": 10,
+  "query": {
+    "bool": {
+      "filter": [
+        { "term": { "service_name": "payment-api" } },
+        { "term": { "log_level": "ERROR" } },
+        { "range": { "duration_ms": { "gte": 3000 } } }
+      ]
+    }
+  }
+}
+
+GET /shop-logs/_search
+{
+  "size": 10,
+  "query": {
+    "bool": {
+      "filter": [
+        { "term": { "service_name": "payment-api" } },
+        { "term": { "log_level": "ERROR" } },
+        { "range": { "duration_ms": { "gt": 3000 } } }
+      ]
+    }
+  }
+}
+
+### V1-T20-P — 정렬 2개(duration_ms desc, timestamp desc) + highlight
+GET /shop-logs/_search
+{
+  "size": 5,
+  "_source": ["log_id", "service_name", "log_level", "duration_ms"],
+  "query": { "match": { "message": "시간 초과" } },
+  "sort": [
+    { "duration_ms": "desc" },
+    { "timestamp": "desc" }
+  ],
+  "highlight": { "fields": { "message": {} } }
+}
+
+### V1-T21-P-1 — 통합 (전문 검색 + filter 3개 + sort 2개 + highlight)
+GET /shop-logs/_search
+{
+  "size": 10,
+  "_source": ["log_id", "timestamp", "service_name", "log_level", "message", "duration_ms"],
+  "query": {
+    "bool": {
+      "must": [{ "match": { "message": "시간 초과" } }],
+      "filter": [
+        { "term": { "service_name": "payment-api" } },
+        { "term": { "log_level": "ERROR" } },
+        { "range": { "duration_ms": { "gte": 3000 } } }
+      ]
+    }
+  },
+  "sort": [
+    { "duration_ms": "desc" },
+    { "timestamp": "desc" }
+  ],
+  "highlight": { "fields": { "message": {} } }
+}
+
+### V1-T21-P-2 — 의도한 0건 (존재하지 않는 log_id)
+GET /shop-logs/_search
+{
+  "size": 5,
+  "query": { "term": { "log_id": "__DAY03_INTENTIONAL_ZERO__" } }
+}
+
+### V1-T16-C — 공통 ingest pipeline simulate (products 대상, 저장하지 않음)
+GET /_ingest/pipeline/product-cleanup
+
+PUT /_ingest/pipeline/product-cleanup
+{
+  "description": "상품 문서 정리",
+  "processors": [
+    { "set": { "field": "in_stock", "value": true, "override": false } },
+    { "rename": { "field": "brand_name", "target_field": "brand" } },
+    { "remove": { "field": ["temp", "raw_price"] } }
+  ]
+}
+
+### V1-T16-C-1 — Samsung
+POST /_ingest/pipeline/product-cleanup/_simulate
+{ "docs":[{"_source":{"product_id":"P-0001","name":"삼성 갤럭시 S24","price":599000,"brand_name":"Samsung","temp":"임시","raw_price":"599,000"}}] }
+
+### V1-T16-C-2 — Apple
+POST /_ingest/pipeline/product-cleanup/_simulate
+{ "docs":[{"_source":{"product_id":"P-0001","name":"아이폰 15 Pro Max","category":"전자기기","price":1590000,"brand_name":"Apple","raw_price":"1,590,000","temp":"임시"}}] }
+
+### V1-T16-C-3 — in_stock=false 유지 확인
+POST /_ingest/pipeline/product-cleanup/_simulate
+{ "docs":[{"_source":{"name":"실험","price":10000,"in_stock":false,"brand_name":"Apple","raw_price":"10,000","temp":"임시"}}] }
+
+### V1-T16-C-4 — temp 누락 시 오류 관찰 (저장 없음)
+POST /_ingest/pipeline/product-cleanup/_simulate
+{ "docs":[{"_source":{"name":"실험","price":10000,"brand_name":"Apple","raw_price":"10,000"}}] }
