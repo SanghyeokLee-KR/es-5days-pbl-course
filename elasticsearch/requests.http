@@ -1,0 +1,8 @@
+### T09 첫 요청 — ES 기본 정보 확인
+GET /
+
+### T09 cluster health — status와 node 수 확인
+GET /_cluster/health
+
+### T09 node 목록 — es01, es02, es03 확인
+GET /_cat/nodes?v
