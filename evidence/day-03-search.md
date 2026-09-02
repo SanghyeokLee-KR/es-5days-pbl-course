@@ -64,3 +64,8 @@
 - [x] 개선 1건과 전후 결과 (섹션 7)
 - [x] README의 기능 목록·실행 경로 동기화
 - [x] 최종 commit SHA: 이 커밋 직후 `git log -1`로 확인
+
+## 9. 교시별 실습 진행 상황
+
+- 1~4교시 (`evidence/day-03-practice/period-01-search-api.md` ~ `period-04-filter-range.md`): 작성 완료
+- 5~8교시 (`period-05-bool.md`, `period-06-sort-highlight.md`, `period-07-quality.md`, `period-08-integration.md`): **미수행**. 배포본 양식만 복사해 둔 상태다.
