@@ -1,0 +1,50 @@
+{
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 1,
+    "analysis": {
+      "analyzer": {
+        "log_message_analyzer": {
+          "type": "standard",
+          "stopwords": "_none_"
+        }
+      }
+    }
+  },
+  "mappings": {
+    "dynamic": "strict",
+    "properties": {
+      "log_id": {
+        "type": "keyword"
+      },
+      "timestamp": {
+        "type": "date"
+      },
+      "service_name": {
+        "type": "keyword"
+      },
+      "log_level": {
+        "type": "keyword"
+      },
+      "logger_name": {
+        "type": "keyword"
+      },
+      "message": {
+        "type": "text",
+        "analyzer": "log_message_analyzer"
+      },
+      "exception_class": {
+        "type": "keyword"
+      },
+      "http_status": {
+        "type": "integer"
+      },
+      "duration_ms": {
+        "type": "integer"
+      },
+      "trace_id": {
+        "type": "keyword"
+      }
+    }
+  }
+}

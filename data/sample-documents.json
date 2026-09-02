@@ -1,0 +1,36 @@
+[
+  {
+    "log_id": "LOG-000001",
+    "timestamp": "2026-08-30T09:12:03Z",
+    "service_name": "order-api",
+    "log_level": "INFO",
+    "logger_name": "com.shop.order-api.RequestHandler",
+    "message": "요청 처리가 정상적으로 완료되었습니다.",
+    "http_status": 200,
+    "duration_ms": 182,
+    "trace_id": "TRC-1"
+  },
+  {
+    "log_id": "LOG-000002",
+    "timestamp": "2026-08-30T14:22:07Z",
+    "service_name": "payment-api",
+    "log_level": "ERROR",
+    "logger_name": "com.shop.payment-api.RequestHandler",
+    "message": "게이트웨이 응답이 3000ms 후 시간 초과되었습니다.",
+    "exception_class": "SocketTimeoutException",
+    "http_status": 504,
+    "duration_ms": 3021,
+    "trace_id": "TRC-2"
+  },
+  {
+    "log_id": "LOG-000003",
+    "timestamp": "2026-08-30T15:40:51Z",
+    "service_name": "catalog-api",
+    "log_level": "WARN",
+    "logger_name": "com.shop.catalog-api.RequestHandler",
+    "message": "요청 처리 중 재시도가 발생했습니다.",
+    "http_status": 200,
+    "duration_ms": 940,
+    "trace_id": "TRC-3"
+  }
+]
