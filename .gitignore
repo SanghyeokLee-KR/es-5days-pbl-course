@@ -5,4 +5,5 @@ __pycache__/
 .DS_Store
 Thumbs.db
 .idea/
+data/pbl-data-template/generated/shop-logs-1000.ndjson
 *_AUDIT_*.md

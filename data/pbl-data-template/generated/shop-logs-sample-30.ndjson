@@ -1,0 +1,60 @@
+{"index":{"_index":"shop-logs","_id":"LOG-000001"}}
+{"log_id":"LOG-000001","timestamp":"2026-08-30T09:12:03Z","service_name":"order-api","log_level":"INFO","logger_name":"com.shop.order-api.RequestHandler","message":"요청 처리가 정상적으로 완료되었습니다.","http_status":200,"duration_ms":182,"trace_id":"TRC-1"}
+{"index":{"_index":"shop-logs","_id":"LOG-000002"}}
+{"log_id":"LOG-000002","timestamp":"2026-08-30T14:22:07Z","service_name":"payment-api","log_level":"ERROR","logger_name":"com.shop.payment-api.RequestHandler","message":"게이트웨이 응답이 3000ms 후 시간 초과되었습니다.","exception_class":"SocketTimeoutException","http_status":504,"duration_ms":3021,"trace_id":"TRC-2"}
+{"index":{"_index":"shop-logs","_id":"LOG-000003"}}
+{"log_id":"LOG-000003","timestamp":"2026-08-30T15:40:51Z","service_name":"catalog-api","log_level":"WARN","logger_name":"com.shop.catalog-api.RequestHandler","message":"요청 처리 중 재시도가 발생했습니다.","http_status":200,"duration_ms":940,"trace_id":"TRC-3"}
+{"index":{"_index":"shop-logs","_id":"LOG-000004"}}
+{"log_id":"LOG-000004","timestamp":"2026-08-23T10:38:14Z","service_name":"auth-api","log_level":"INFO","logger_name":"com.shop.auth-api.RequestHandler","message":"요청 처리 중 재시도가 발생했습니다.","http_status":200,"duration_ms":1128,"trace_id":"TRC-4"}
+{"index":{"_index":"shop-logs","_id":"LOG-000005"}}
+{"log_id":"LOG-000005","timestamp":"2026-08-27T23:48:05Z","service_name":"order-api","log_level":"WARN","logger_name":"com.shop.order-api.RequestHandler","message":"처리 중 예기치 않은 오류가 발생했습니다.","http_status":200,"duration_ms":872,"trace_id":"TRC-5"}
+{"index":{"_index":"shop-logs","_id":"LOG-000006"}}
+{"log_id":"LOG-000006","timestamp":"2026-08-18T09:11:59Z","service_name":"payment-api","log_level":"INFO","logger_name":"com.shop.payment-api.RequestHandler","message":"요청 처리가 정상적으로 완료되었습니다.","exception_class":"SocketTimeoutException","http_status":504,"duration_ms":3701,"trace_id":"TRC-6"}
+{"index":{"_index":"shop-logs","_id":"LOG-000007"}}
+{"log_id":"LOG-000007","timestamp":"2026-08-30T10:42:58Z","service_name":"auth-api","log_level":"INFO","logger_name":"com.shop.auth-api.RequestHandler","message":"요청 처리가 정상적으로 완료되었습니다.","http_status":200,"duration_ms":3831,"trace_id":"TRC-7"}
+{"index":{"_index":"shop-logs","_id":"LOG-000008"}}
+{"log_id":"LOG-000008","timestamp":"2026-08-18T18:49:15Z","service_name":"order-api","log_level":"ERROR","logger_name":"com.shop.order-api.RequestHandler","message":"요청 처리가 정상적으로 완료되었습니다.","http_status":504,"duration_ms":3043,"trace_id":"TRC-8"}
+{"index":{"_index":"shop-logs","_id":"LOG-000009"}}
+{"log_id":"LOG-000009","timestamp":"2026-08-31T02:06:52Z","service_name":"auth-api","log_level":"INFO","logger_name":"com.shop.auth-api.RequestHandler","message":"요청 처리 중 재시도가 발생했습니다.","http_status":200,"duration_ms":3906,"trace_id":"TRC-9"}
+{"index":{"_index":"shop-logs","_id":"LOG-000010"}}
+{"log_id":"LOG-000010","timestamp":"2026-08-30T12:40:19Z","service_name":"catalog-api","log_level":"INFO","logger_name":"com.shop.catalog-api.RequestHandler","message":"요청 처리가 정상적으로 완료되었습니다.","http_status":200,"duration_ms":3845,"trace_id":"TRC-10"}
+{"index":{"_index":"shop-logs","_id":"LOG-000011"}}
+{"log_id":"LOG-000011","timestamp":"2026-08-30T15:41:45Z","service_name":"catalog-api","log_level":"INFO","logger_name":"com.shop.catalog-api.RequestHandler","message":"요청 처리가 정상적으로 완료되었습니다.","http_status":200,"duration_ms":4437,"trace_id":"TRC-11"}
+{"index":{"_index":"shop-logs","_id":"LOG-000012"}}
+{"log_id":"LOG-000012","timestamp":"2026-08-24T09:04:29Z","service_name":"payment-api","log_level":"WARN","logger_name":"com.shop.payment-api.RequestHandler","message":"요청 처리가 정상적으로 완료되었습니다.","http_status":504,"duration_ms":4812,"trace_id":"TRC-12"}
+{"index":{"_index":"shop-logs","_id":"LOG-000013"}}
+{"log_id":"LOG-000013","timestamp":"2026-08-30T01:12:29Z","service_name":"order-api","log_level":"WARN","logger_name":"com.shop.order-api.RequestHandler","message":"요청 처리 중 재시도가 발생했습니다.","http_status":200,"duration_ms":1937,"trace_id":"TRC-13"}
+{"index":{"_index":"shop-logs","_id":"LOG-000014"}}
+{"log_id":"LOG-000014","timestamp":"2026-08-26T01:58:46Z","service_name":"order-api","log_level":"INFO","logger_name":"com.shop.order-api.RequestHandler","message":"처리 중 예기치 않은 오류가 발생했습니다.","http_status":504,"duration_ms":4972,"trace_id":"TRC-14"}
+{"index":{"_index":"shop-logs","_id":"LOG-000015"}}
+{"log_id":"LOG-000015","timestamp":"2026-08-21T18:34:05Z","service_name":"auth-api","log_level":"INFO","logger_name":"com.shop.auth-api.RequestHandler","message":"요청 처리 중 재시도가 발생했습니다.","http_status":504,"duration_ms":803,"trace_id":"TRC-15"}
+{"index":{"_index":"shop-logs","_id":"LOG-000016"}}
+{"log_id":"LOG-000016","timestamp":"2026-08-22T17:09:22Z","service_name":"auth-api","log_level":"INFO","logger_name":"com.shop.auth-api.RequestHandler","message":"게이트웨이 응답이 3000ms 후 시간 초과되었습니다.","http_status":200,"duration_ms":2422,"trace_id":"TRC-16"}
+{"index":{"_index":"shop-logs","_id":"LOG-000017"}}
+{"log_id":"LOG-000017","timestamp":"2026-08-24T19:49:21Z","service_name":"catalog-api","log_level":"INFO","logger_name":"com.shop.catalog-api.RequestHandler","message":"요청 처리가 정상적으로 완료되었습니다.","http_status":500,"duration_ms":218,"trace_id":"TRC-17"}
+{"index":{"_index":"shop-logs","_id":"LOG-000018"}}
+{"log_id":"LOG-000018","timestamp":"2026-08-25T14:09:29Z","service_name":"payment-api","log_level":"INFO","logger_name":"com.shop.payment-api.RequestHandler","message":"요청 처리가 정상적으로 완료되었습니다.","http_status":200,"duration_ms":1666,"trace_id":"TRC-18"}
+{"index":{"_index":"shop-logs","_id":"LOG-000019"}}
+{"log_id":"LOG-000019","timestamp":"2026-08-26T10:54:39Z","service_name":"order-api","log_level":"INFO","logger_name":"com.shop.order-api.RequestHandler","message":"요청 처리가 정상적으로 완료되었습니다.","http_status":500,"duration_ms":971,"trace_id":"TRC-19"}
+{"index":{"_index":"shop-logs","_id":"LOG-000020"}}
+{"log_id":"LOG-000020","timestamp":"2026-08-23T20:22:42Z","service_name":"catalog-api","log_level":"INFO","logger_name":"com.shop.catalog-api.RequestHandler","message":"요청 처리가 정상적으로 완료되었습니다.","exception_class":"IllegalStateException","http_status":200,"duration_ms":1327,"trace_id":"TRC-20"}
+{"index":{"_index":"shop-logs","_id":"LOG-000021"}}
+{"log_id":"LOG-000021","timestamp":"2026-08-27T02:53:44Z","service_name":"auth-api","log_level":"INFO","logger_name":"com.shop.auth-api.RequestHandler","message":"요청 처리 중 재시도가 발생했습니다.","exception_class":"SocketTimeoutException","http_status":200,"duration_ms":2802,"trace_id":"TRC-21"}
+{"index":{"_index":"shop-logs","_id":"LOG-000022"}}
+{"log_id":"LOG-000022","timestamp":"2026-08-23T12:56:43Z","service_name":"payment-api","log_level":"INFO","logger_name":"com.shop.payment-api.RequestHandler","message":"처리 중 예기치 않은 오류가 발생했습니다.","http_status":200,"duration_ms":4051,"trace_id":"TRC-22"}
+{"index":{"_index":"shop-logs","_id":"LOG-000023"}}
+{"log_id":"LOG-000023","timestamp":"2026-08-21T09:34:43Z","service_name":"auth-api","log_level":"INFO","logger_name":"com.shop.auth-api.RequestHandler","message":"요청 처리 중 재시도가 발생했습니다.","http_status":404,"duration_ms":868,"trace_id":"TRC-23"}
+{"index":{"_index":"shop-logs","_id":"LOG-000024"}}
+{"log_id":"LOG-000024","timestamp":"2026-08-25T02:34:19Z","service_name":"catalog-api","log_level":"WARN","logger_name":"com.shop.catalog-api.RequestHandler","message":"요청 처리가 정상적으로 완료되었습니다.","http_status":500,"duration_ms":1313,"trace_id":"TRC-24"}
+{"index":{"_index":"shop-logs","_id":"LOG-000025"}}
+{"log_id":"LOG-000025","timestamp":"2026-08-20T09:01:05Z","service_name":"auth-api","log_level":"INFO","logger_name":"com.shop.auth-api.RequestHandler","message":"요청 처리가 정상적으로 완료되었습니다.","http_status":500,"duration_ms":1644,"trace_id":"TRC-25"}
+{"index":{"_index":"shop-logs","_id":"LOG-000026"}}
+{"log_id":"LOG-000026","timestamp":"2026-08-25T16:31:17Z","service_name":"catalog-api","log_level":"INFO","logger_name":"com.shop.catalog-api.RequestHandler","message":"요청 처리가 정상적으로 완료되었습니다.","http_status":200,"duration_ms":3392,"trace_id":"TRC-26"}
+{"index":{"_index":"shop-logs","_id":"LOG-000027"}}
+{"log_id":"LOG-000027","timestamp":"2026-08-31T15:13:15Z","service_name":"catalog-api","log_level":"ERROR","logger_name":"com.shop.catalog-api.RequestHandler","message":"요청 처리가 정상적으로 완료되었습니다.","exception_class":"IllegalStateException","http_status":200,"duration_ms":2664,"trace_id":"TRC-27"}
+{"index":{"_index":"shop-logs","_id":"LOG-000028"}}
+{"log_id":"LOG-000028","timestamp":"2026-08-22T18:31:03Z","service_name":"auth-api","log_level":"WARN","logger_name":"com.shop.auth-api.RequestHandler","message":"요청 처리가 정상적으로 완료되었습니다.","http_status":200,"duration_ms":2215,"trace_id":"TRC-28"}
+{"index":{"_index":"shop-logs","_id":"LOG-000029"}}
+{"log_id":"LOG-000029","timestamp":"2026-08-30T06:56:39Z","service_name":"catalog-api","log_level":"INFO","logger_name":"com.shop.catalog-api.RequestHandler","message":"요청 처리가 정상적으로 완료되었습니다.","http_status":200,"duration_ms":3002,"trace_id":"TRC-29"}
+{"index":{"_index":"shop-logs","_id":"LOG-000030"}}
+{"log_id":"LOG-000030","timestamp":"2026-08-19T21:06:33Z","service_name":"payment-api","log_level":"INFO","logger_name":"com.shop.payment-api.RequestHandler","message":"요청 처리가 정상적으로 완료되었습니다.","http_status":200,"duration_ms":1935,"trace_id":"TRC-30"}

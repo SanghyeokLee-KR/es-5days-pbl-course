@@ -1,0 +1,57 @@
+{
+    "index":  "shop-logs",
+    "document_count":  1000,
+    "seed":  20260901,
+    "id_field":  "log_id",
+    "files":  {
+                  "bulk":  "shop-logs-1000.ndjson",
+                  "sample":  "shop-logs-sample-30.ndjson"
+              },
+    "field_kinds":  [
+                        {
+                            "name":  "log_id",
+                            "kind":  "id"
+                        },
+                        {
+                            "name":  "timestamp",
+                            "kind":  "date"
+                        },
+                        {
+                            "name":  "service_name",
+                            "kind":  "choice"
+                        },
+                        {
+                            "name":  "log_level",
+                            "kind":  "weighted_choice"
+                        },
+                        {
+                            "name":  "logger_name",
+                            "kind":  "template"
+                        },
+                        {
+                            "name":  "message",
+                            "kind":  "weighted_choice"
+                        },
+                        {
+                            "name":  "exception_class",
+                            "kind":  "choice"
+                        },
+                        {
+                            "name":  "http_status",
+                            "kind":  "weighted_choice"
+                        },
+                        {
+                            "name":  "duration_ms",
+                            "kind":  "integer"
+                        },
+                        {
+                            "name":  "trace_id",
+                            "kind":  "template"
+                        }
+                    ],
+    "generated_at":  "deterministic-from-seed",
+    "fixed_document_count":  3,
+    "settings_sha256":  "7E15CF214BB2B84E0938453756520EF2898924BFBAE68F38B9A0F391E6A54B7F",
+    "bulk_sha256":  "5964E487357585AF72922A6339059A62E42072A99911740D0AA19FAFD2140C6F",
+    "mapping_sha256":  "F2E6C7D1BBF7344E107999F38180D6C8426CB5D5D62422E79FF5F9FCC0A423DD"
+}
