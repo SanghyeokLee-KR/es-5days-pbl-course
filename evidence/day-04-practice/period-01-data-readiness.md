@@ -21,13 +21,13 @@
 - index pattern: `products`
 - time field: `created_at`
 - 확인한 7개 field: `product_id`, `name`, `category`, `brand`, `price`, `in_stock`, `created_at`
-- 사용한 절대 시간 범위: `Jul 1, 2025 @ 09:00` ~ `Sep 30, 2026 @ 09:00` (데이터 생성 구간 2025-08~2026-08보다 넓게 잡아 마지막 문서가 빠지지 않게 함)
-- Discover 실제 문서 수: 10,000 (`Documents (10,000)`, `GET /products/_count`와 일치)
+- 사용한 절대 시간 범위: `Jul 1, 2025 @ 09:00` ~ `Sep 30, 2026 @ 09:00` (생성 구간 2025-08~2026-08보다 넓게)
+- Discover 실제 문서 수: 10,000 (`GET /products/_count`와 동일)
 - 정상/보류/오류: YELLOW
-- 판정 근거: 가이드 기준값은 20,000이지만 실제 배포된 `day-02/data/generated/products-10000.ndjson`과 `generate-products.ps1`(기본 `$Count=10000`)은 10,000건이다. `RELEASE_MANIFEST.md`의 Day2 v1 기록도 "합성10000건"으로 명시돼 있어, Day4 가이드와 실제 배포 데이터의 버전 불일치로 판단했다(우리 쪽 적재 오류 아님).
-- 캡처 파일: `evidence/dashboard-discover.png` — Data View(`쇼핑몰 상품 데이터`), 절대 시간 범위, `Documents (10,000)`, 7개 field 열이 한 화면에 보인다.
+- 판정 근거: 가이드 기준 20,000, 실제 배포본 10,000. `day-02/data/generated/products-10000.ndjson`, `generate-products.ps1` 기본 `$Count=10000`, `RELEASE_MANIFEST.md` Day2 v1 "합성10000건". 교재와 데이터 버전 차이(적재 오류 아님)
+- 캡처 파일: `evidence/dashboard-discover.png` (Data View, 절대 시간 범위, `Documents (10,000)`, 7개 field 열)
 
-처음에는 시간 범위를 `Last 1 year`로 두어 9,818건만 잡혔다. 실제 `created_at` 분포(2025-08~2026-08)를 완전히 덮지 못했기 때문이고, 위 절대 범위로 바꾼 뒤 10,000건 전체가 표시됐다.
+`Last 1 year`로 두면 9,818건, 위 절대 범위로 바꾸면 10,000건.
 
 ## (공통·필수) 문제 2 — KQL 적용 전후를 비교
 
@@ -45,11 +45,11 @@ in_stock : false
 |---|---:|---:|---:|
 | 문서 수 | 10,000 | 1,531 | 10,000 |
 
-- 적용 후 대표 문서 ID 2개: `P-03985`(MobiCore 컴팩트 노이즈 캔슬링 헤드폰, 311,500원), `P-09246`(SkinNote 컴팩트 세럼, 83,600원) — 캡처 화면 상위 2건
-- `in_stock` 값 확인: 두 문서 모두 `false`(표의 `in_stock` 열 전체가 `false`)
-- 복구 성공 여부: 예 — Discover에서 KQL을 지우고 다시 실행하니 `Documents (10,000)`으로 그대로 복구됐다.
-- 캡처 파일: `evidence/dashboard-discover-kql.png` — KQL `in_stock : false` 입력 상태와 `Documents (1,531)`, `in_stock` 열이 전부 `false`인 것이 보인다.
-- KQL이 데이터를 삭제한 것인가? 이유: 아니다. KQL은 검색 조건일 뿐이고 문서를 지우거나 바꾸지 않는다. 조건을 지우면 원래 문서 수(10,000)로 그대로 돌아오는 것이 그 증거다.
+- 적용 후 대표 문서 ID 2개: `P-03985`(MobiCore 컴팩트 노이즈 캔슬링 헤드폰, 311,500원), `P-09246`(SkinNote 컴팩트 세럼, 83,600원)
+- `in_stock` 값 확인: 둘 다 `false`
+- 복구 성공 여부: 예. `Documents (10,000)`으로 복구
+- 캡처 파일: `evidence/dashboard-discover-kql.png` (KQL `in_stock : false`, `Documents (1,531)`)
+- KQL이 데이터를 삭제한 것인가? 이유: 아니다. 검색 조건일 뿐이고, 조건을 지우면 10,000으로 돌아온다.
 
 ## (진단·필수) 문제 3 — 0건 또는 일부 데이터만 보이는 상황 복구
 
@@ -69,16 +69,16 @@ in_stock : false
 
 ### 진단 기록
 
-이 진단은 실습 중 실제로 겪은 상황을 그대로 기록한 것이다(가정 상황이 아니라 Day4 초반 실제 오류).
+가정이 아니라 Day4 초반 실제 상황.
 
-- 재현한 증상: 공통 Dashboard의 전체 상품 수 Metric이 1로 표시됨(20,000도 10,000도 아님)
-- 마지막 정상 상태: Lens에서 Data View를 `products`로 선택하고 Metric에 `Count of records`를 넣은 직후
-- 확인한 항목과 순서: 1) 시간 범위 확인 → 우측 상단이 `Aug 22, 2026 @ 12:36 ~ 14:35`(2시간)로 매우 좁게 설정돼 있었음 2) Data View 확인 → `products` 정상 3) KQL 입력 없음 확인 4) filter pill 없음 확인 5) field는 mapping에 정상 존재
-- 발견한 원인: 시간 범위가 실제 `created_at` 분포(2025-08~2026-08에 걸쳐 있음)와 겹치지 않는 좁은 절대 구간으로 남아 있었다. index 삭제나 mapping 오류가 아니었다.
+- 재현한 증상: 전체 상품 수 Metric이 1로 표시
+- 마지막 정상 상태: Lens에서 Data View `products` 선택, Metric `Count of records` 넣은 직후
+- 확인한 항목과 순서: 1) 시간 범위 → `Aug 22, 2026 @ 12:36 ~ 14:35`(2시간)로 좁게 설정됨 2) Data View → `products` 정상 3) KQL 없음 4) filter pill 없음 5) field mapping 정상
+- 발견한 원인: 시간 범위가 실제 `created_at` 분포(2025-08~2026-08)와 안 겹치는 좁은 절대 구간. index나 mapping 문제 아님
 - 수정한 내용: 시간 범위를 `Last 1 year`로 확장
-- 수정 후 문서 수: 9,818 (전체 10,000 중 일부가 여전히 "Last 1 year" 밖에 있어 완전한 10,000은 아님)
-- 다음부터 먼저 확인할 항목: 값이 이상하면 index 상태보다 시간 범위를 가장 먼저 확인한다.
-- 캡처 파일: 없음(문제 발견 당시 화면은 별도 저장하지 않음, 대화 내 스크린샷으로만 확인)
+- 수정 후 문서 수: 9,818 (182건이 `Last 1 year` 밖)
+- 다음부터 먼저 확인할 항목: 시간 범위(index 상태보다 먼저)
+- 캡처 파일: 없음
 
 ## (개인·필수) 문제 4 — 내 데이터 준비 상태 카드
 
@@ -96,8 +96,8 @@ in_stock : false
 - 실제 존재 여부: 있음
 - 데이터 문서 수: 1,000 (`GET /shop-logs/_count`)
 - A 개인 데이터 사용 / B 공통 products 사용+보강 설계 / C 공통 실습+개인 청사진 중 선택: A
-- 선택 이유: Day2에 만든 `shop-logs`에 `log_level`, `exception_class`, `http_status`, `duration_ms` 등 필요한 field가 이미 있다.
-- 부족한 데이터와 다음 행동: 현재 없음. 서비스(`service_name`)별 필터/Control은 만들지 않기로 결정했다(`evidence/day-04/dashboard-review.md` 참고).
+- 선택 이유: `shop-logs`에 `log_level`, `exception_class`, `http_status`, `duration_ms`가 이미 있음
+- 부족한 데이터와 다음 행동: 없음. `service_name` 필터/Control은 안 만듦(`evidence/day-04/dashboard-review.md`)
 
 ## (선택 도전) 문제 5 — 서로 다른 KQL 3개 설계
 
@@ -109,7 +109,7 @@ in_stock : false
 | `price >= 200000` | 20만원 이상 상품은 몇 건인가 | 1,467 | - | 제거 후 10,000 |
 | `in_stock : false` | 재고 없는 상품은 몇 건인가 | 1,531 | P-00019 | 제거 후 10,000 |
 
-세 값 모두 Kibana 화면 클릭이 아니라 `GET /products/_search` 집계로 확인한 값이며, 화면 재현은 별도로 하지 않았다(선택 문제).
+세 값 모두 `GET /products/_search` 집계로 확인. 화면 재현 안 함.
 
 ## 교시 완료 신호
 
@@ -117,4 +117,4 @@ in_stock : false
 - YELLOW: 결과는 있으나 수치·시간·field 중 하나가 다름
 - RED: Data View 또는 Discover에서 데이터를 확인할 수 없음
 
-**판정: YELLOW** — Data View·field·KQL 동작은 전부 정상이지만, 기준 문서 수(20,000)가 실제 배포 데이터(10,000)와 다르다. 원인은 문제1에 기록한 교재 버전 불일치이며 우리 쪽 데이터 적재 문제가 아니다.
+**판정: YELLOW**. Data View, field, KQL 동작은 정상. 기준 문서 수만 20,000이 아닌 10,000(교재 버전 차이).

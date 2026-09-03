@@ -22,7 +22,7 @@ GET /products/_search
 
 - `hits.total.value`: 380
 - 확인한 문서 ID 3개: P-00025, P-00129, P-00185
-- 각 문서의 category / in_stock / price: 세 문서 모두 category는 전자기기, in_stock은 true였고 가격도 50,000원 이상 200,000원 이하에 들어왔다. P-00025의 가격은 59,400원이었다.
+- 각 문서의 category / in_stock / price: 셋 다 전자기기 / true / 50,000~200,000원 안(P-00025는 59,400원)
 - 조건을 위반한 문서가 있는가: 없음
 
 ## (공통) 문제 2 — 경계 포함 범위 직접 구현
@@ -50,8 +50,8 @@ GET /products/_search
 ### 결과 입력
 
 - `hits.total.value`: 440
-- 최소·최대 price: 반환된 상위 10개 문서를 기준으로 확인했다. 별도의 stats 조회는 하지 않았다.
-- 50,000 또는 200,000 경계 문서 존재 여부와 ID: 문제 3의 경계 제외 결과와 비교해서 확인했다. 아래 비교 결과를 참고한다.
+- 최소·최대 price: 상위 10개 기준으로만 확인. stats 조회 안 함
+- 50,000 또는 200,000 경계 문서 존재 여부와 ID: 없음. 문제 3과 total이 같음
 
 ## (공통) 문제 3 — 경계 제외 범위 직접 구현
 
@@ -78,8 +78,8 @@ GET /products/_search
 ### 비교 결과
 
 - 문제 2 total / 문제 3 total: 440 / 440
-- 빠진 경계 문서 ID: 없음. 두 요청의 결과가 같았다.
-- 경계 문서가 없어 결과가 같다면 확인한 근거: 두 요청 모두 total이 440이었고, 상위 10개 ID(P-00025, P-00129, P-00185...)도 같았다. 전자기기 중에는 가격이 정확히 50,000원이나 200,000원인 문서가 없는 것으로 확인했다.
+- 빠진 경계 문서 ID: 없음
+- 경계 문서가 없어 결과가 같다면 확인한 근거: 두 요청 다 total 440, 상위 10개 ID(P-00025, P-00129, P-00185...)도 동일
 
 ## (개인) 문제 4 — 자기 정확 조건 2개
 
@@ -109,8 +109,8 @@ GET /shop-logs/_search
 ```
 
 - field·type·값 2개: `service_name`(keyword)=`payment-api`, `log_level`(keyword)=`ERROR`
-- 기대 ID / 제외 ID: LOG-000002는 payment-api의 ERROR 로그라 포함될 것으로 예상했다. LOG-000001은 order-api 로그이므로 제외될 것으로 예상했다.
-- 실제 결과와 판정: `hits.total.value`는 20이었고 LOG-000002가 상위 결과에 포함된 것을 확인했다. 통과.
+- 기대 ID / 제외 ID: LOG-000002(payment-api ERROR) / LOG-000001(order-api)
+- 실제 결과와 판정: `hits.total.value` 20, LOG-000002 포함. 통과
 
 ## (개인) 문제 5 — 자기 범위와 경계 실험
 
@@ -134,7 +134,7 @@ GET /shop-logs/_search
 { "size": 5, "query": { "range": { "duration_ms": { "gt": 50 } } } }
 ```
 
-- field / type / 경계값: `duration_ms` / `integer` / 50. 실제 데이터의 최솟값이며 `evidence/day-02-data.md`의 stats에서 확인했다.
+- field / type / 경계값: `duration_ms` / `integer` / 50(실제 최솟값, `evidence/day-02-data.md` stats)
 - 포함 요청 total / 제외 요청 total: `gte 50` → 1000 / `gt 50` → 999
-- 달라진 문서 ID: 두 결과는 정확히 1건 차이가 났다. `duration_ms`가 50인 LOG-000550이 `gt` 조건에서 빠졌다.
-- 경계 판정: 경계값 포함 여부에 따른 차이를 확인했다. 공통 문제에서는 가격이 경계값과 정확히 같은 문서가 없었지만, 이번에는 실제 최솟값을 기준으로 잡아서 `gte`와 `gt`의 차이가 1건으로 나타났다.
+- 달라진 문서 ID: LOG-000550(`duration_ms` 50). `gt`에서 빠짐
+- 경계 판정: `gte`/`gt` 차이 1건

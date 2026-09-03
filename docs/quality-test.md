@@ -4,14 +4,14 @@
 
 | 번호 | 검색 질문 | 요청 파일/조건 | 기대 결과 | 실제 결과 요약 | 개선 여부·근거 |
 |---|---|---|---|---|---|
-| 1 | "시간 초과"가 언급된 로그를 찾고 싶다 | `requests.http` V1-T18-P-2, `match: {message: "시간 초과"}` | message에 "시간 초과"가 있는 로그, 전체의 10%쯤 | 100건 (1000건 중 10.0%). 상위 5건 다 "게이트웨이 응답이 3000ms 후 시간 초과되었습니다."였고 highlight로 "시간" 토큰이 잡혔다 | 고침. 처음엔 `my-data-settings.ps1`에 UTF-8 BOM이 없어서 PowerShell 5.1이 한글을 잘못 읽었고 message가 깨져서 1건만 나왔다. BOM 넣고 다시 만드니 100건이 됐다 |
-| 2 | 결제 서비스에서 난 ERROR만 보고 싶다 | `requests.http` V1-T19-P-1, `bool.filter: [service_name=payment-api, log_level=ERROR]` | payment-api이면서 ERROR인 로그만 | 20건. 확인한 5건 다 두 조건을 만족했다 | 없음 |
-| 3 | 결제 서비스에서 처리 시간이 3초를 넘은 ERROR를 보고 싶다 | `requests.http` V1-T19-P-2, filter 3개(service_name, log_level, duration_ms) | payment-api, ERROR, duration_ms 3000 초과. 딱 3000인 문서가 있는지도 확인 | `gte:3000`이랑 `gt:3000` 둘 다 8건으로 같았다. duration_ms가 정확히 3000인 문서가 없다는 뜻 | 없음 |
+| 1 | "시간 초과"가 언급된 로그를 찾고 싶다 | `requests.http` V1-T18-P-2, `match: {message: "시간 초과"}` | message에 "시간 초과" 있는 로그, 전체 10%쯤 | 100건(1000건 중 10.0%). 상위 5건 다 "게이트웨이 응답이 3000ms 후 시간 초과되었습니다.", highlight로 "시간" 토큰 | 개선함. `my-data-settings.ps1`에 UTF-8 BOM이 없어 message가 깨져 1건만 나왔고, BOM 넣고 재생성 후 100건 |
+| 2 | 결제 서비스에서 난 ERROR만 보고 싶다 | `requests.http` V1-T19-P-1, `bool.filter: [service_name=payment-api, log_level=ERROR]` | payment-api이면서 ERROR인 로그만 | 20건. 확인한 5건 다 두 조건 만족 | 없음 |
+| 3 | 결제 서비스에서 처리 시간이 3초를 넘은 ERROR를 보고 싶다 | `requests.http` V1-T19-P-2, filter 3개(service_name, log_level, duration_ms) | payment-api, ERROR, duration_ms 3000 초과. 경계값 확인 | `gte:3000`과 `gt:3000` 둘 다 8건. duration_ms가 딱 3000인 문서 없음 | 없음 |
 
 ## 최소 기준
 
-- 전문 검색은 질문 1, 정확 조건은 질문 2의 log_level term, bool/filter는 질문 2와 3의 bool.filter로 채웠다
+- 전문 검색: 질문 1 / 정확 조건: 질문 2의 log_level term / bool·filter: 질문 2, 3의 bool.filter
 - filter 2개 이상: 질문 3에서 service_name, log_level, duration_ms 3개
-- sort 2개: `requests.http` V1-T20-P에서 duration_ms desc 다음 timestamp desc
-- 0건이어야 하는 조건 1개: `requests.http` V1-T21-P-2. 없는 log_id로 검색하면 0건
-- 예상과 다른 결과: 질문 1에서 인코딩 문제를 찾았다 (위 표에 적음)
+- sort 2개: `requests.http` V1-T20-P의 duration_ms desc, timestamp desc
+- 0건이어야 하는 조건 1개: `requests.http` V1-T21-P-2, 없는 log_id로 검색 시 0건
+- 예상과 다른 결과: 질문 1의 인코딩 문제(위 표)
