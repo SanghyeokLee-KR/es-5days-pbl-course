@@ -8,7 +8,7 @@
 | 2 | 결제 서비스에서 난 ERROR만 보고 싶다 | `requests.http` V1-T19-P-1, `bool.filter: [service_name=payment-api, log_level=ERROR]` | service_name=payment-api, log_level=ERROR인 로그만 | `hits.total.value: 20`, 확인한 5건 모두 두 조건을 만족 | 없음 — filter 2개로 정확히 좁혀짐 |
 | 3 | 결제 서비스에서 처리 시간이 3초를 넘은 ERROR를 보고 싶다 | `requests.http` V1-T19-P-2, filter 3개(service_name·log_level·duration_ms) | payment-api·ERROR·duration_ms>3000인 로그, 정확히 3000인 경계 문서 여부 확인 | `gte:3000`과 `gt:3000` 둘 다 `hits.total.value: 8`로 동일 — duration_ms가 정확히 3000인 문서가 없다는 뜻 | 없음 — 경계 문서 부재를 두 요청 비교로 확인함 |
 
-## 최소 기준 충족 확인
+## 최소 기준
 
 - 전문 검색 1개(질문 1), 정확 조건 검색 1개(질문 2의 `log_level` term), bool/filter 검색 1개(질문 2·3의 `bool.filter`) 포함
 - filter 2개 이상: 질문 3에서 `service_name`·`log_level`·`duration_ms` 3개 적용
