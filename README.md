@@ -13,7 +13,7 @@
   메시지 본문 검색뿐 아니라 서비스·로그 레벨 조건과
   처리 시간 범위를 함께 적용하는 검색을 만들고 싶다.
 
-> 강사 배포 자료 공개 현황: [Day 1](day-01/README.md), [Day 2](day-02/README.md), [Day 3](day-03/README.md). Day4~5는 순차 공개된다.
+> 강사 배포 자료 공개 현황: [Day 1](day-01/README.md), [Day 2](day-02/README.md), [Day 3](day-03/README.md), [Day 4](day-04/README.md). Day5는 순차 공개된다.
 
 ## 2. 검색 질문 초안
 
@@ -25,6 +25,8 @@
 
 > Day 2 데이터 준비 결과는 강사 배포 양식(`evidence/day-02-data.md`)을 따라 작성한다.
 > Day 3에는 [교시별 실습 문제](day-03/practice/README.md) 8개 파일에서 공통 3문제와 개인 PBL 2문제씩 수행한다. 루트 `requests.http`에 `V1-T17-P`~`V1-T21-P` 요청을 추가하고, 품질 상세는 `docs/quality-test.md`, 일일 요약은 `evidence/day-03-search.md`에 작성한다.
+
+> Day 4에는 [Kibana 9.5.0 화면 그대로 따라 하기](day-04/KIBANA_9_5_STEP_BY_STEP.md), [차트 완성형 한눈에 보기](day-04/CHART_GALLERY.md), [교시별 연습문제](day-04/practice/README.md)를 사용한다. 답은 개인 저장소의 `evidence/day-04-practice/`에, 최종 Dashboard 설계·검증은 `evidence/day-04/` 양식을 사용한다.
 
 ## 3. 결과에 보여 줄 값과 후보 조건
 

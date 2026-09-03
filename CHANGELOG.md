@@ -1,5 +1,22 @@
 # 학생 배포 변경 기록
 
+## 2026-09-03 — Day 4 Kibana 9.5.0 상세 실행 가이드 보강
+
+- `day-04/KIBANA_9_5_STEP_BY_STEP.md`에 Data View 생성·확인, Discover, Lens, 필수 6패널, Options list, filter/KQL 복구, 저장·복제·검증·백업, 선택 확장 4패널의 실제 클릭·입력 순서를 추가했다.
+- `day-04/CHART_GALLERY.md`에 필수·선택 그래프의 완성 모습, 질문, field, 계산 방식, 상세 절차 링크를 한 페이지로 정리했다.
+- Kibana 9.5.0 실제 화면을 기준으로 Donut은 Pie의 Donut hole 설정, 월 Line은 `Minimum interval=1M`, 정확한 가격 구간은 custom ranges, 제목은 패널 Settings, Inspect는 패널 메뉴임을 교정했다.
+- 현재 수업 환경에 PDF가 없음을 명확히 하고 화면 캡처를 기본 근거, Dashboard JSON과 Saved Objects NDJSON을 선택 백업으로 정리했다.
+- 학생교재, 교시별 가이드, 연습문제, 답안 작성법, evidence 안내를 상세 실행 가이드와 연결했다.
+
+## 2026-09-03 — Day 4 Kibana Dashboard 실습 공개
+
+- `day-04/`에 학생교재, 교시별 실습가이드, 실제 Kibana 9.5.0 화면 캡처 20종, Dashboard 기준값 요청, 설계·검증 evidence 양식을 추가했다.
+- `day-04/practice/`에 교시별 문제지 8개와 답안 작성 가이드를 추가했다. 각 교시는 필수 4문제와 선택 도전 1문제로 구성하며 전체 40문제다.
+- 공통 기능 재현뿐 아니라 설정 비교, 오류 복구, 개인 질문·field 적합성, 데이터 보강 규칙, 개인 Dashboard, 사용자 시나리오, 교차 검증과 개선을 포함했다.
+- 학생은 문제지를 개인 저장소 `evidence/day-04-practice/`에 복사해 실제 결과와 캡처 근거를 작성한다.
+- PDF·Inspect처럼 현재 환경에 없을 수 있는 메뉴는 필수 제출에서 제외하고 화면 캡처와 Discover/요청 비교를 기본 근거로 사용한다.
+- 강사용 PPT·대본·정답·평가 메모·실제 인증정보는 포함하지 않았다.
+
 ## 2026-09-01 — Day 3 교시별 실습 문제지 추가
 
 - `day-03/practice/`에 교시별 문제지 8개를 추가했다.
