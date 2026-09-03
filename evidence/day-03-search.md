@@ -67,5 +67,5 @@
 
 ## 9. 교시별 실습 진행 상황
 
-- 1~4교시 (`evidence/day-03-practice/period-01-search-api.md` ~ `period-04-filter-range.md`): 작성 완료
-- 5~8교시 (`period-05-bool.md`, `period-06-sort-highlight.md`, `period-07-quality.md`, `period-08-integration.md`): **미수행**. 배포본 양식만 복사해 둔 상태다.
+- 1~6교시 (`evidence/day-03-practice/period-01-search-api.md` ~ `period-06-sort-highlight.md`): 작성 완료
+- 7~8교시 (`period-07-quality.md`, `period-08-integration.md`): **미수행**. 배포본 양식만 복사해 둔 상태다.
