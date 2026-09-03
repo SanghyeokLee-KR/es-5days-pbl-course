@@ -28,6 +28,8 @@
 
 > Day 4에는 [Kibana 9.5.0 화면 그대로 따라 하기](day-04/KIBANA_9_5_STEP_BY_STEP.md), [차트 완성형 한눈에 보기](day-04/CHART_GALLERY.md), [교시별 연습문제](day-04/practice/README.md)를 사용한다. 답은 개인 저장소의 `evidence/day-04-practice/`에, 최종 Dashboard 설계·검증은 `evidence/day-04/` 양식을 사용한다.
 
+> 자신의 인덱스와 Search API를 브라우저에서 시연할 때는 [FE·BE 검색 앱 템플릿](search-app-template/README.md)을 사용한다. `search-app-template/`을 개인 PBL 저장소로 복사하고 설정 JSON 2개를 수정한 뒤 `start.ps1`을 실행한다. 적용 절차는 [APPLY_MY_INDEX_GUIDE.md](search-app-template/APPLY_MY_INDEX_GUIDE.md)를 따른다.
+
 ## 3. 결과에 보여 줄 값과 후보 조건
 
 - 검색 결과 한 줄에 보여 줄 값: 발생 시각, 로그 레벨, 서비스명, 메시지, 처리 시간

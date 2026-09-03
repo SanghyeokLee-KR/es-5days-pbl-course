@@ -7,8 +7,17 @@
 | Day 3 전날 | `day-03/`, 검색 요청·테스트 양식 | 요청 결과·PBL 변환 항목 검증 |
 | Day 4 전날 | `day-04/` | Data View·Dashboard 기준·화면 확인 |
 | Day 5 전날 | `day-05/`, 제출·발표 양식 | 미래 정답·평가 메모 제외 |
+| 강사 지정 시점 | `search-app-template/` | 실제 `.env` 제외, 독립 폴더 복사·자동 비밀번호 설정·로컬 검색 검증 |
 
 각 공개 직전 `QUALITY_GATES.md`의 공개 범위·명령 검증 항목을 점검한다.
+
+## 2026-09-03 — FE·BE 검색 앱 템플릿
+
+- 특정 Day에 종속되지 않는 `search-app-template/`을 저장소 루트에 공개한다.
+- 학생은 템플릿을 개인 PBL 저장소로 복사하고 `config/app.config.json`, `config/search-request.json`만 수정한다.
+- 첫 `start.ps1` 실행에서 ES 비밀번호를 한 번 입력하면 Git 제외 대상 `.env`가 자동 생성된다.
+- 별도 Node.js·npm 설치 없이 Docker Desktop과 실행 중인 Day 1 ES를 사용한다.
+- 실제 `.env`, 강사용 자료, 정답, 평가 메모는 포함하지 않는다.
 
 현재 Day2 공개 경로: 교재는 `day-02/student-workbook.md`, 실습 안내·요청·작성 양식은 `day-02/practice/`다. 아래 최초 공개 기록의 v1은 이력 구분이며 학생이 선택할 별도 버전 폴더가 아니다.
 
