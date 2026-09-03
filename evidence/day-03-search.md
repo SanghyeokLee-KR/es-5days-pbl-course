@@ -22,43 +22,43 @@
 
 | 요청 ID | 기대 문서 ID·이유 | 제외 문서 ID·이유 | 의도한 0건 조건 | 경계 포함·제외 기준 |
 |---|---|---|---|---|
-| Q01 | `LOG-000002`(대표 3건 중 타임아웃 ERROR) 포함, message에 "시간 초과" 문자열이 있는 약 100건 | `LOG-000001`(정상 메시지), `LOG-000003`(재시도 메시지) | - | - |
-| Q02 | `LOG-000002` 포함, service_name=payment-api·log_level=ERROR인 문서 | `LOG-000001`(order-api), 다른 서비스이거나 log_level이 ERROR가 아닌 문서 | - | - |
-| Q03 | `LOG-000002`(duration_ms=3021) 포함 | duration_ms가 3000 미만인 payment-api ERROR 문서 | `log_id=__DAY03_INTENTIONAL_ZERO__`는 0건이어야 함(`V1-T21-P-2`) | `gte:3000`과 `gt:3000` 결과가 같으면 경계값 3000인 문서가 없다는 뜻 |
+| Q01 | `LOG-000002`(대표 3건 중 타임아웃 ERROR)랑 message에 "시간 초과"가 있는 100건쯤 | `LOG-000001`(정상 메시지), `LOG-000003`(재시도 메시지) | - | - |
+| Q02 | `LOG-000002`랑 payment-api + ERROR인 문서 | `LOG-000001`(order-api), 서비스가 다르거나 ERROR가 아닌 문서 | - | - |
+| Q03 | `LOG-000002`(duration_ms 3021) | duration_ms가 3000 밑인 payment-api ERROR | `log_id=__DAY03_INTENTIONAL_ZERO__`면 0건이어야 함(`V1-T21-P-2`) | `gte:3000`이랑 `gt:3000`이 같으면 딱 3000인 문서가 없다는 뜻 |
 
 ## 4. 실제 결과와 판정
 
 | 요청 ID | `hits.total.value` | 상위 3개 ID | 조건·경계 통과 | 관련/보류/무관과 근거 | 판정 |
 |---|---:|---|---|---|---|
-| Q01 | 100 | LOG-000002, LOG-000016, LOG-000036 | 해당 없음 | 관련 — 상위 3건 모두 message에 "시간 초과되었습니다" 포함 | 통과 |
-| Q02 | 20 | (확인한 5건 모두 payment-api·ERROR) | 통과 — 확인한 문서 전부 두 조건 만족 | 관련 — 정확 조건이라 전건이 의도와 일치 | 통과 |
-| Q03 | 3 | LOG-000521, LOG-000718, LOG-000002 | 통과 — 3건 모두 duration_ms≥3000, service_name=payment-api, log_level=ERROR | 관련 — 3건 모두 실제 타임아웃 메시지 | 통과 |
+| Q01 | 100 | LOG-000002, LOG-000016, LOG-000036 | 해당 없음 | 관련. 상위 3건 다 message에 "시간 초과되었습니다"가 있다 | 통과 |
+| Q02 | 20 | (확인한 5건 다 payment-api, ERROR) | 통과. 본 문서는 전부 두 조건을 만족 | 관련. 정확 조건이라 다 맞다 | 통과 |
+| Q03 | 3 | LOG-000521, LOG-000718, LOG-000002 | 통과. 3건 다 duration_ms 3000 이상, payment-api, ERROR | 관련. 3건 다 진짜 타임아웃 메시지 | 통과 |
 
 ## 5. 조건 제거·변형 실험
 
 | 기준 요청 | 바꾼 한 요소 | 변경 전 total·대표 ID | 변경 후 total·새로 들어온/빠진 ID | 관찰한 역할 |
 |---|---|---|---|---|
-| Q03 경계(`V1-T19-P-2`) | `range` 조건을 `gte:3000` → `gt:3000` | `gte`: total 8, LOG-000002 포함 | `gt`: total 8, 동일 8건 (변화 없음) | duration_ms 값 중 정확히 3000인 문서가 없어 경계 포함·제외가 결과에 영향을 주지 않음을 확인. range 경계는 실제 데이터 분포에 따라 결과가 달라지거나 같을 수 있다는 것을 보여준다. |
+| Q03 경계(`V1-T19-P-2`) | `range`를 `gte:3000`에서 `gt:3000`으로 | `gte`: 8건, LOG-000002 포함 | `gt`: 8건, 그대로 | duration_ms가 딱 3000인 문서가 없어서 경계를 포함하든 빼든 결과가 같았다 |
 
 ## 6. 실패 원인 진단
 
-- 문제: Q01("시간 초과" 전문 검색)에서 기대치인 약 100건이 아니라 1건만 반환됐다.
+- 문제: Q01("시간 초과" 검색)에서 100건쯤 나와야 하는데 1건만 나왔다
 - 1차 원인 분류: data (생성 단계의 인코딩 문제)
-- 확인한 실제 근거: `Get-Content -Encoding UTF8`로 원본 NDJSON 파일을 직접 읽었을 때 `LOG-000004`부터 `message` field가 `"?붿껌 泥섎━ 以??ъ떆?꾧? 諛쒖깮?덉뒿?덈떎."`처럼 깨져 있음을 확인했다. `sample-documents.json`에서 온 `LOG-000001~003`은 정상이었다.
-- 다음 확인 또는 변경: `my-data-settings.ps1`이 UTF-8 BOM 없이 저장돼 있어, Windows PowerShell 5.1이 dot-sourcing 시 한글 리터럴을 시스템 코드페이지로 잘못 해석한 것으로 판단했다.
+- 확인한 실제 근거: `Get-Content -Encoding UTF8`로 NDJSON을 직접 열어보니 `LOG-000004`부터 message가 `"?붿껌 泥섎━ 以??ъ떆?꾧? 諛쒖깮?덉뒿?덈떎."`처럼 깨져 있었다. `sample-documents.json`에서 온 `LOG-000001~003`만 멀쩡했다
+- 다음 확인 또는 변경: `my-data-settings.ps1`이 BOM 없이 저장돼 있었다. PowerShell 5.1이 dot-sourcing할 때 한글을 시스템 코드페이지로 읽은 걸로 봤다
 
 ## 7. 개선 전후
 
 | 문제 | 추정 원인 | 변경한 한 요소 | 같은 조건으로 재실행한 결과 | 개선 판정과 근거 |
 |---|---|---|---|---|
-| "시간 초과" 검색이 1건만 반환됨 | `my-data-settings.ps1`에 UTF-8 BOM 없음 | 같은 파일을 UTF-8 BOM 있음으로 다시 저장 | 데이터 재생성·재검증·재적재 후 동일 쿼리 실행 시 100건 반환 | 개선 — 목표 비율(10%)과 정확히 일치하는 100건으로 정상화됨 |
+| "시간 초과" 검색이 1건만 나옴 | `my-data-settings.ps1`에 UTF-8 BOM 없음 | BOM 넣어서 다시 저장 | 다시 만들고 적재한 뒤 같은 쿼리에서 100건 | 개선. 목표 비율 10%랑 딱 맞는 100건이 나왔다 |
 
 ## 8. 완료 체크
 
 - [x] 전문 검색 요청 1개 (Q01 / `V1-T18-P-2`)
 - [x] 정확 조건 요청 1개 (Q02 / `V1-T19-P-1`)
 - [x] bool/filter 요청 1개 (Q03 / `V1-T21-P-1`)
-- [x] filter 2개 이상 (Q03: service_name·log_level·duration_ms 3개)
+- [x] filter 2개 이상 (Q03: service_name, log_level, duration_ms 3개)
 - [x] sort 2개 (`V1-T20-P`: duration_ms desc, timestamp desc)
 - [x] highlight 1개 (`V1-T20-P`, Q03: message)
 - [x] 의도한 0건 요청 1개 (`V1-T21-P-2`)
