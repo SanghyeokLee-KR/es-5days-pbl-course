@@ -31,7 +31,7 @@ Day 4 수업 완료 기준은 Lens 차트 4개입니다. 각 차트는 하나의
 
 - Options list 또는 range control에 사용할 field: `service_name`, `log_level`
 - 이 control로 함께 좁힐 차트: 차트 1~4 전부
-- Data View 이름: Day 4에 작성
+- Data View 이름: `shop-logs`(개인), `쇼핑몰 상품 데이터`(공통 products)
 - 시간 field: 사용
 - 시간 field를 사용한다면 field 이름과 기간: `timestamp`, 최근 14일
 
@@ -44,7 +44,11 @@ Day 4 수업 완료 기준은 Lens 차트 4개입니다. 각 차트는 하나의
 
 ## 6. Day 4 완료 기록
 
-- 실제로 만든 차트 수: Day 4에 작성
-- Dashboard 화면 캡처: `evidence/dashboard.png`
-- 선택 export: `kibana/dashboard.ndjson`
-- 계획과 다르게 바꾼 점 및 이유: Day 4에 작성
+- 실제로 만든 차트 수: 개인 Dashboard 6개(Metric, log_level Donut, log_level Bar, log_level×exception_class Treemap, http_status 2개), 공통 Dashboard 6개
+- Dashboard 화면 캡처: `evidence/day-04/personal-dashboard.png`(개인), `evidence/day-04/common-dashboard.png`(공통)
+- 선택 export: 미생성(`kibana/dashboard.ndjson` 없음)
+- 계획과 다르게 바꾼 점 및 이유:
+  - 차트 1을 "전체 ERROR 수"가 아니라 "전체 로그 수"로 만들었다. 레벨별 비율(차트 2)에서 ERROR 비중을 바로 읽을 수 있어 기준값은 전체 건수가 더 유용하다고 판단했다.
+  - 계획의 "서비스별 ERROR"(차트 2)·"시간대별 추이"(차트 4) 대신 로그 레벨 비율(Donut), 레벨×예외 분포(Treemap), http_status 분포를 만들었다. 예외 유형 우선순위 판단이 더 급한 질문이라고 봐서 바꿨다.
+  - `service_name`·`log_level` control을 계획했지만 시간 제약으로 만들지 않았다. 그래서 서비스별로 나눠 보는 질문은 이번 Dashboard에서 답하지 못한다(`evidence/day-04/dashboard-review.md` 2절·5절 참고).
+  - 캡처 경로가 계획의 `evidence/dashboard.png`가 아니라 `evidence/day-04/` 아래다. Day 4 배포본(`day-04/evidence/day-04/README.md`)이 지정한 파일명을 따랐다.

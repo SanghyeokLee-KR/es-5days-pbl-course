@@ -17,15 +17,17 @@
 
 ### 결과 입력
 
-- 선택한 Data View 이름: 소핑몰 상품 데이터
+- 선택한 Data View 이름: 쇼핑몰 상품 데이터
 - index pattern: `products`
 - time field: `created_at`
 - 확인한 7개 field: `product_id`, `name`, `category`, `brand`, `price`, `in_stock`, `created_at`
-- 사용한 절대 시간 범위: Last 1 year (강사 권장 절대범위 대신 상대범위 사용)
-- Discover 실제 문서 수: 10,000 (`GET /products/_count` 기준. "Last 1 year" 필터로 보면 9,818)
+- 사용한 절대 시간 범위: `Jul 1, 2025 @ 09:00` ~ `Sep 30, 2026 @ 09:00` (데이터 생성 구간 2025-08~2026-08보다 넓게 잡아 마지막 문서가 빠지지 않게 함)
+- Discover 실제 문서 수: 10,000 (`Documents (10,000)`, `GET /products/_count`와 일치)
 - 정상/보류/오류: YELLOW
 - 판정 근거: 가이드 기준값은 20,000이지만 실제 배포된 `day-02/data/generated/products-10000.ndjson`과 `generate-products.ps1`(기본 `$Count=10000`)은 10,000건이다. `RELEASE_MANIFEST.md`의 Day2 v1 기록도 "합성10000건"으로 명시돼 있어, Day4 가이드와 실제 배포 데이터의 버전 불일치로 판단했다(우리 쪽 적재 오류 아님).
-- 캡처 파일: 없음 — Discover 단독 캡처 대신 `GET /products/_count` 응답으로 수치를 확인했다.
+- 캡처 파일: `evidence/dashboard-discover.png` — Data View(`쇼핑몰 상품 데이터`), 절대 시간 범위, `Documents (10,000)`, 7개 field 열이 한 화면에 보인다.
+
+처음에는 시간 범위를 `Last 1 year`로 두어 9,818건만 잡혔다. 실제 `created_at` 분포(2025-08~2026-08)를 완전히 덮지 못했기 때문이고, 위 절대 범위로 바꾼 뒤 10,000건 전체가 표시됐다.
 
 ## (공통·필수) 문제 2 — KQL 적용 전후를 비교
 
@@ -43,10 +45,10 @@ in_stock : false
 |---|---:|---:|---:|
 | 문서 수 | 10,000 | 1,531 | 10,000 |
 
-- 적용 후 대표 문서 ID 2개: `P-00019`(UrbanStep 백팩, 174,500원), `P-00067`(Dayfit 셔츠, 46,500원)
-- `in_stock` 값 확인: 두 문서 모두 `false`
-- 복구 성공 여부: 예(`GET /products/_search`에 조건 없이 실행하면 10,000 그대로 나옴). Kibana 화면에서 직접 지우고 다시 확인하는 절차는 별도로 클릭 재현하지 않고 동일 조건을 ES 쿼리로 대체 확인했다.
-- 캡처 파일: 없음(위와 동일한 이유)
+- 적용 후 대표 문서 ID 2개: `P-03985`(MobiCore 컴팩트 노이즈 캔슬링 헤드폰, 311,500원), `P-09246`(SkinNote 컴팩트 세럼, 83,600원) — 캡처 화면 상위 2건
+- `in_stock` 값 확인: 두 문서 모두 `false`(표의 `in_stock` 열 전체가 `false`)
+- 복구 성공 여부: 예 — Discover에서 KQL을 지우고 다시 실행하니 `Documents (10,000)`으로 그대로 복구됐다.
+- 캡처 파일: `evidence/dashboard-discover-kql.png` — KQL `in_stock : false` 입력 상태와 `Documents (1,531)`, `in_stock` 열이 전부 `false`인 것이 보인다.
 - KQL이 데이터를 삭제한 것인가? 이유: 아니다. KQL은 검색 조건일 뿐이고 문서를 지우거나 바꾸지 않는다. 조건을 지우면 원래 문서 수(10,000)로 그대로 돌아오는 것이 그 증거다.
 
 ## (진단·필수) 문제 3 — 0건 또는 일부 데이터만 보이는 상황 복구
